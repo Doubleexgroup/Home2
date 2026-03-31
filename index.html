@@ -12,21 +12,15 @@
 
 <style>
 
-html,body{
-margin:0;
-padding:0;
-min-height:100vh;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-color:white;
-}
-
 body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 background:url("sfondogrigio.jpg") center/cover no-repeat fixed;
+color:white;
 display:flex;
 flex-direction:column;
+min-height:100vh;
 }
-
-/* MAIN */
 
 main{
 
@@ -42,17 +36,51 @@ padding-top:60px;
 
 }
 
-/* STRUTTURA MOLECOLA */
+/* CONTAINER */
 
 .molecule{
 
 position:relative;
 
-width:750px;
+width:760px;
 
-height:550px;
+height:540px;
 
 max-width:95vw;
+
+}
+
+/* LINEE SVG */
+
+.connections{
+
+position:absolute;
+
+width:100%;
+
+height:100%;
+
+top:0;
+
+left:0;
+
+}
+
+.connections line{
+
+stroke:rgba(255,255,255,0.35);
+
+stroke-width:2;
+
+transition:0.4s;
+
+}
+
+/* GLOW QUANDO HOVER */
+
+.molecule:hover .connections line{
+
+stroke:rgba(255,255,255,0.6);
 
 }
 
@@ -72,7 +100,7 @@ align-items:center;
 
 .logo img{
 
-transition:.35s;
+transition:0.35s;
 
 }
 
@@ -81,8 +109,8 @@ transition:.35s;
 transform:scale(1.15);
 
 filter:
-drop-shadow(0 0 15px rgba(255,255,255,0.8))
-drop-shadow(0 0 25px rgba(255,255,255,0.4));
+drop-shadow(0 0 12px rgba(255,255,255,0.9))
+drop-shadow(0 0 20px rgba(255,255,255,0.6));
 
 }
 
@@ -104,13 +132,13 @@ width:420px;
 
 }
 
-/* laterali */
+/* SINISTRA */
 
 .home{
 
-left:60px;
+top:230px;
 
-top:220px;
+left:0;
 
 }
 
@@ -120,11 +148,13 @@ width:200px;
 
 }
 
+/* DESTRA */
+
 .roma{
 
-right:60px;
+top:230px;
 
-top:220px;
+right:0;
 
 }
 
@@ -134,7 +164,7 @@ width:200px;
 
 }
 
-/* basso */
+/* BASSO */
 
 .dinner{
 
@@ -152,90 +182,6 @@ width:260px;
 
 }
 
-/* LINEE MOLECOLA */
-
-.line{
-
-position:absolute;
-
-background:rgba(255,255,255,0.3);
-
-}
-
-/* linee verticali */
-
-.line1{
-
-width:2px;
-
-height:200px;
-
-left:50%;
-
-top:120px;
-
-}
-
-/* diagonali */
-
-.line2{
-
-width:240px;
-
-height:2px;
-
-top:220px;
-
-left:190px;
-
-transform:rotate(35deg);
-
-}
-
-.line3{
-
-width:240px;
-
-height:2px;
-
-top:220px;
-
-right:190px;
-
-transform:rotate(-35deg);
-
-}
-
-/* linee verso dinner */
-
-.line4{
-
-width:240px;
-
-height:2px;
-
-bottom:150px;
-
-left:190px;
-
-transform:rotate(-35deg);
-
-}
-
-.line5{
-
-width:240px;
-
-height:2px;
-
-bottom:150px;
-
-right:190px;
-
-transform:rotate(35deg);
-
-}
-
 /* FOOTER */
 
 footer{
@@ -243,10 +189,6 @@ footer{
 padding:35px 20px;
 
 text-align:center;
-
-background:transparent;
-
-backdrop-filter:blur(3px);
 
 color:#561b6d;
 
@@ -259,12 +201,6 @@ margin-bottom:50px;
 .footer-section{
 
 margin-bottom:18px;
-
-}
-
-.footer-section h3{
-
-margin-bottom:10px;
 
 }
 
@@ -300,103 +236,33 @@ color:#54196d;
 
 }
 
-/* MODAL */
+/* RESPONSIVE */
 
-#modal{
+@media(max-width:700px){
 
-display:none;
+.molecule{
 
-position:fixed;
-
-top:0;
-
-left:0;
-
-width:100%;
-
-height:100%;
-
-background:rgba(0,0,0,0.8);
-
-justify-content:center;
-
-align-items:center;
-
-z-index:9999;
+height:480px;
 
 }
 
-.modal-box{
+.main-logo img{
 
-background:#fff;
-
-color:#000;
-
-padding:20px;
-
-max-width:600px;
-
-border-radius:8px;
-
-max-height:80%;
-
-overflow:auto;
+width:260px;
 
 }
 
-/* COOKIE */
+.home img,.roma img{
 
-#cookieBanner{
-
-position:fixed;
-
-bottom:0;
-
-width:100%;
-
-background:#111;
-
-color:#fff;
-
-padding:15px;
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-flex-wrap:wrap;
-
-z-index:9999;
+width:140px;
 
 }
 
-.cookie-buttons button{
+.dinner img{
 
-margin-left:10px;
-
-padding:8px 12px;
-
-border:none;
-
-cursor:pointer;
+width:180px;
 
 }
-
-.accept{
-
-background:#2ecc71;
-
-color:#fff;
-
-}
-
-.reject{
-
-background:#e74c3c;
-
-color:#fff;
 
 }
 
@@ -410,15 +276,25 @@ color:#fff;
 
 <div class="molecule">
 
-<div class="line line1"></div>
-<div class="line line2"></div>
-<div class="line line3"></div>
-<div class="line line4"></div>
-<div class="line line5"></div>
+<!-- LINEE MOLECOLARI -->
 
-<a class="logo main-logo">
+<svg class="connections" viewBox="0 0 760 540">
+
+<line x1="380" y1="110" x2="100" y2="270"/>
+
+<line x1="380" y1="110" x2="660" y2="270"/>
+
+<line x1="100" y1="270" x2="380" y2="470"/>
+
+<line x1="660" y1="270" x2="380" y2="470"/>
+
+</svg>
+
+<!-- LOGHI -->
+
+<div class="logo main-logo">
 <img src="Group2 no sfondo.png">
-</a>
+</div>
 
 <a href="https://doubleexhome.com" target="_blank" class="logo home">
 <img src="Home2 no sfondo.png">
@@ -474,15 +350,14 @@ color:#fff;
 
 function openModal(type){
 
-let text="";
+if(type==="privacy")
+alert("Questo sito non raccoglie dati personali.");
 
-if(type==="privacy") text="Questo sito non raccoglie dati personali.";
+if(type==="cookie")
+alert("Il sito utilizza cookie tecnici necessari.");
 
-if(type==="cookie") text="Il sito utilizza solo cookie tecnici.";
-
-if(type==="termini") text="Questo sito ha finalità informativa.";
-
-alert(text);
+if(type==="termini")
+alert("Questo sito ha finalità informativa.");
 
 }
 
