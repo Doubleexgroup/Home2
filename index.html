@@ -1,181 +1,434 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Doubleex Group</title>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
+  :root{
+    --accent:#e63946;
+    --text:#ffffff;
+    /* ── DIMENSIONI BASE (PC >1100px) ──
+       Centrale : 480px  → raggio JS = 240
+       Satellite: 240px  → raggio JS = 120
+       Scena    : 1000px
+       Orbita R : 1000 * 0.38 = 380px
+       sat left : R - rSat = 380 - 120 = 260px
+       sat top  : -rSat    = -120px
+    ── */
+  }
 
-body{
-margin:0;
-font-family:Arial, Helvetica, sans-serif;
-background:#ffffff;
-text-align:center;
-}
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--text);
+  }
 
-/* LOGO PRINCIPALE */
+  body{
+    background:url("sfondogrigio.jpg") center/cover no-repeat fixed;
+    display:flex; flex-direction:column;
+  }
 
-.main-logo{
-margin-top:40px;
-margin-bottom:80px;
-}
+  main{
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-start;
+    text-align:center; padding:30px 20px 10px;
+  }
 
-.main-logo img{
-max-width:280px;
-}
+  /* ══ SCENA MOLECOLA ══ */
+  .molecule-scene {
+    position: relative;
+    width: 1000px;
+    height: 1000px;
+    max-width: 98vw;
+    max-height: 98vw;
+    margin: 0 auto 10px;
+  }
 
-/* STRUTTURA MOLECOLARE */
+  .orbit-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-.molecule{
-position:relative;
-width:100%;
-max-width:900px;
-margin:auto;
-padding-bottom:120px;
-}
+  .orbit-path {
+    fill: none;
+    stroke: rgba(86,27,109,0.45);
+    stroke-width: 1.5;
+    stroke-dasharray: 7 5;
+  }
 
-/* LINEA VERTICALE */
+  .connect-line {
+    stroke: #561b6d;
+    stroke-width: 2.2;
+    stroke-dasharray: 9 6;
+    animation: dashFlow 10s linear infinite;
+  }
 
-.molecule::before{
-content:"";
-position:absolute;
-left:50%;
-top:0;
-bottom:0;
-width:3px;
-background:black;
-transform:translateX(-50%);
-}
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -220; }
+  }
 
-/* NODO */
+  /* ── NODO CENTRALE 480px ── */
+  .node-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 480px; height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 80%);
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5;
+    animation: breathe 5s ease-in-out infinite alternate;
+  }
 
-.node{
-position:relative;
-display:flex;
-align-items:center;
-margin:120px 0;
-}
+  .node-center img {
+    width: 80%;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.25));
+  }
 
-/* LINEE ORIZZONTALI */
+  @keyframes breathe {
+    from { box-shadow: 0 0 20px rgba(255,255,255,0.08); }
+    to   { box-shadow: 0 0 45px rgba(255,255,255,0.22); }
+  }
 
-.node::before{
-content:"";
-position:absolute;
-height:3px;
-background:black;
-width:120px;
-}
+  /* ── BRACCIO ORBITANTE ── */
+  .orbit-arm {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    transform-origin: 0 0;
+    z-index: 10;
+  }
 
-/* SINISTRA */
+  .orbit-arm-1 { animation: spin 70s linear infinite; }
+  .orbit-arm-2 { animation: spin 70s linear infinite; animation-delay: calc(-70s / 3); }
+  .orbit-arm-3 { animation: spin 70s linear infinite; animation-delay: calc(-70s * 2 / 3); }
 
-.left{
-justify-content:flex-start;
-}
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
 
-.left::before{
-right:50%;
-}
+  /* ── NODO SATELLITE 240px (metà del centrale) ──
+     R orbita = 380px  →  left = 380 - 120 = 260px, top = -120px */
+  .sat-node {
+    position: absolute;
+    left: 260px;
+    top: -120px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 80%);
+    border: 1px solid rgba(255,255,255,0.20);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    animation: counterSpin 70s linear infinite;
+    transition: box-shadow .3s;
+    cursor: pointer;
+    text-decoration: none;
+    pointer-events: all;
+    z-index: 10;
+  }
 
-/* DESTRA */
+  .orbit-arm-2 .sat-node { animation-delay: calc(-70s / 3); }
+  .orbit-arm-3 .sat-node { animation-delay: calc(-70s * 2 / 3); }
 
-.right{
-justify-content:flex-end;
-}
+  @keyframes counterSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
 
-.right::before{
-left:50%;
-}
+  .sat-node:hover {
+    box-shadow: 0 0 30px rgba(255,255,255,0.50), 0 0 65px rgba(255,255,255,0.18);
+  }
 
-/* LOGHI */
+  .sat-node img {
+    width: 78%;
+    pointer-events: none;
+    user-select: none;
+    transition: filter .3s;
+  }
 
-.node img{
-width:120px;
-height:120px;
-object-fit:contain;
-background:white;
-padding:10px;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
-transition:transform .2s;
-}
+  .sat-node:hover img {
+    filter: drop-shadow(0 0 12px rgba(255,255,255,0.7));
+  }
 
-.node img:hover{
-transform:scale(1.08);
-}
+  .particle {
+    fill: #8a2db5;
+    filter: url(#glow);
+  }
 
-/* RESPONSIVE */
+  /* ── FOOTER ── */
+  footer{
+    padding:0 20px 50px; text-align:center;
+    background:transparent; backdrop-filter:blur(3px);
+    color:#561b6d;
+  }
+  .footer-border{
+    border-top:1px solid #561b6d;
+    padding-top:12px; margin-bottom:10px;
+  }
+  .footer-section{ margin-bottom:14px; }
+  .footer-section h3{ color:#561b6d; margin:0 0 10px; }
+  .contact-item{
+    color:#561b6d; margin-bottom:7px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .contact-item a{ color:#561b6d; text-decoration:none; }
+  .contact-item a:hover{ text-decoration:underline; color:#8a2db5; }
+  .footer-bottom{
+    border-top:1px solid rgba(86,27,109,0.25);
+    padding-top:10px; font-size:.85rem; color:#561b6d;
+  }
+  .footer-bottom a{ cursor:pointer; color:#561b6d; text-decoration:none; }
+  .footer-bottom a:hover{ color:#54196d; }
 
-@media(max-width:700px){
+  /* ── MODAL ── */
+  #modal{
+    display:none; position:fixed; top:0; left:0;
+    width:100%; height:100%; background:rgba(0,0,0,0.8);
+    justify-content:center; align-items:center; z-index:9999;
+  }
+  .modal-box{
+    background:#fff; color:#000; padding:20px;
+    max-width:600px; border-radius:8px;
+    max-height:80%; overflow:auto;
+  }
 
-.node{
-justify-content:center !important;
-}
+  /* ── COOKIE ── */
+  #cookieBanner{
+    position:fixed; bottom:0; width:100%;
+    background:#111; color:#fff; padding:15px;
+    display:flex; justify-content:space-between;
+    align-items:center; flex-wrap:wrap; z-index:9999;
+  }
+  .cookie-buttons button{ margin-left:10px; padding:8px 12px; border:none; cursor:pointer; }
+  .accept{ background:#2ecc71; color:#fff; }
+  .reject{ background:#e74c3c; color:#fff; }
 
-.node::before{
-display:none;
-}
+  /* ══════════════════════════════
+     RESPONSIVE
+     Regola: satellite = centrale / 2
+     Scena  = centrale * 2.08 (spazio per orbita + satelliti)
 
-}
+     PC base  (>1100): centrale 480 | satellite 240 | scena 1000
+     Tablet L (≤1100): centrale 360 | satellite 180 | scena  750
+     Tablet S (≤900) : centrale 280 | satellite 140 | scena  600
+     Phone    (≤600) : centrale 200 | satellite 100 | scena  430
+     Phone S  (≤380) : centrale 160 | satellite  80 | scena  350
 
+     R orbita = scena * 0.38
+     sat left = R - satellite/2
+     sat top  = -satellite/2
+  ══════════════════════════════ */
+
+  @media(max-width:1100px){
+    /* centrale 360, satellite 180, scena 750, R=285, left=285-90=195, top=-90 */
+    .molecule-scene{ width:750px; height:750px; }
+    .node-center{ width:360px; height:360px; }
+    .sat-node{ width:180px; height:180px; left:195px; top:-90px; }
+  }
+
+  @media(max-width:900px){
+    /* centrale 280, satellite 140, scena 600, R=228, left=228-70=158, top=-70 */
+    .molecule-scene{ width:600px; height:600px; }
+    .node-center{ width:280px; height:280px; }
+    .sat-node{ width:140px; height:140px; left:158px; top:-70px; }
+    main{ padding:24px 16px 10px; }
+  }
+
+  @media(max-width:600px){
+    /* centrale 200, satellite 100, scena 430, R=163, left=163-50=113, top=-50 */
+    .molecule-scene{ width:430px; height:430px; }
+    .node-center{ width:200px; height:200px; }
+    .sat-node{ width:100px; height:100px; left:113px; top:-50px; }
+    main{ padding:16px 10px 8px; }
+    footer{ padding:0 12px 36px; font-size:14px; }
+    .contact-item{ font-size:13px; }
+    .cookie-buttons button{ margin-left:6px; padding:6px 10px; font-size:13px; }
+  }
+
+  @media(max-width:380px){
+    /* centrale 160, satellite 80, scena 350, R=133, left=133-40=93, top=-40 */
+    .molecule-scene{ width:350px; height:350px; }
+    .node-center{ width:160px; height:160px; }
+    .sat-node{ width:80px; height:80px; left:93px; top:-40px; }
+  }
 </style>
-
 </head>
-
 <body>
 
-<!-- LOGO PRINCIPALE -->
+<main>
+  <div class="molecule-scene" id="scene">
 
-<div class="main-logo">
-<img src="logo.png" alt="Doubleex Group">
+    <svg class="orbit-svg" id="orbitSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <circle class="orbit-path" id="orbitCircle" cx="500" cy="500" r="380"/>
+      <line id="line1" class="connect-line"/>
+      <line id="line2" class="connect-line" style="animation-delay:-3.3s"/>
+      <line id="line3" class="connect-line" style="animation-delay:-6.6s"/>
+      <circle class="particle" r="5" id="p1">
+        <animateMotion id="am1" dur="4.5s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;0" keyTimes="0;0.5;1"/>
+      </circle>
+      <circle class="particle" r="5" id="p2">
+        <animateMotion id="am2" dur="5.2s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;0" keyTimes="0;0.5;1"/>
+      </circle>
+      <circle class="particle" r="5" id="p3">
+        <animateMotion id="am3" dur="5.8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;0" keyTimes="0;0.5;1"/>
+      </circle>
+    </svg>
+
+    <div class="node-center">
+      <img src="Group2 no sfondo.png" alt="Doubleex Group">
+    </div>
+
+    <div class="orbit-arm orbit-arm-1">
+      <a href="https://doubleexhome.com/" target="_blank" class="sat-node" id="sat1">
+        <img src="Home2 no sfondo.png" alt="Doubleex Home">
+      </a>
+    </div>
+
+    <div class="orbit-arm orbit-arm-2">
+      <a href="https://www.romaprimeliving.it/" target="_blank" class="sat-node" id="sat2">
+        <img src="Romaliving2.png" alt="Roma Prime Living">
+      </a>
+    </div>
+
+    <div class="orbit-arm orbit-arm-3">
+      <a href="https://dinnerinthesky.it/" target="_blank" class="sat-node" id="sat3">
+        <img src="dinner2 no sfondo.png" alt="Dinner in the Sky">
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-border">
+    <div class="footer-section">
+      <h3>Contatti</h3>
+      <div class="contact-item"><i class="fas fa-phone"></i> <a href="tel:+393755248477">+39 3755248477</a></div>
+      <div class="contact-item"><i class="fas fa-at"></i> <a href="mailto:info@doubleexgroup.com">info@doubleexgroup.com</a></div>
+      <div class="contact-item"><i class="fas fa-location-dot"></i> <a href="https://www.google.com/maps/search/?api=1&query=Via+Pomarico+58+00178+Roma" target="_blank" rel="noopener">Via Pomarico 58, 00178 Roma</a></div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Doubleexgroup LTD |
+      <a onclick="openModal('privacy')">Privacy</a> |
+      <a onclick="openModal('cookie')">Cookie</a> |
+      <a onclick="openModal('termini')">Termini</a>
+    </div>
+  </div>
+</footer>
+
+<div id="modal">
+  <div class="modal-box">
+    <h2 id="title"></h2>
+    <div id="text"></div>
+    <br>
+    <button onclick="closeModal()">Chiudi</button>
+  </div>
 </div>
 
-<div class="molecule">
-
-<!-- LOGO 1 -->
-
-<div class="node left">
-<a href="https://sito1.com">
-<img src="logo1.png">
-</a>
+<div id="cookieBanner">
+  <span>Utilizziamo cookie tecnici e, previo consenso, cookie di analisi e marketing.</span>
+  <div class="cookie-buttons">
+    <button class="accept" onclick="acceptCookies()">Accetta</button>
+    <button class="reject" onclick="rejectCookies()">Rifiuta</button>
+  </div>
 </div>
 
-<!-- LOGO 2 -->
+<script>
+/*
+  Raggi base (corrispondono al CSS a 1000px di scena):
+    centrale = 480/2 = 240px
+    satellite = 240/2 = 120px
+    R orbita  = 1000 * 0.38 = 380px
+  Il JS scala tutto proporzionalmente con W/1000.
+*/
+const ORBIT_DURATION  = 70000;
+const OFFSETS         = [0, 1/3, 2/3];
+const R_CENTER_BASE   = 240;  // 480px / 2
+const R_SAT_BASE      = 120;  // 240px / 2
+const SCENE_BASE      = 1000;
 
-<div class="node right">
-<a href="https://sito2.com">
-<img src="logo2.png">
-</a>
-</div>
+const lines       = [document.getElementById('line1'), document.getElementById('line2'), document.getElementById('line3')];
+const ams         = [document.getElementById('am1'),   document.getElementById('am2'),   document.getElementById('am3')];
+const orbitCircle = document.getElementById('orbitCircle');
+const scene       = document.getElementById('scene');
+let startTime     = null;
 
-<!-- LOGO 3 -->
+function tick(ts) {
+  if (!startTime) startTime = ts;
 
-<div class="node left">
-<a href="https://sito3.com">
-<img src="logo3.png">
-</a>
-</div>
+  const W  = scene.offsetWidth;
+  const cx = W / 2;
+  const cy = W / 2;
 
-<!-- LOGO 4 -->
+  const scale   = W / SCENE_BASE;
+  const R       = W * 0.38;
+  const rCenter = R_CENTER_BASE * scale;
+  const rSat    = R_SAT_BASE    * scale;
 
-<div class="node right">
-<a href="https://sito4.com">
-<img src="logo4.png">
-</a>
-</div>
+  orbitCircle.setAttribute('cx', cx);
+  orbitCircle.setAttribute('cy', cy);
+  orbitCircle.setAttribute('r',  R);
 
-<!-- LOGO 5 (PRONTO PER IL FUTURO) -->
+  const elapsed  = ts - startTime;
+  const progress = (elapsed % ORBIT_DURATION) / ORBIT_DURATION;
 
-<!--
-<div class="node left">
-<a href="https://sito5.com">
-<img src="logo5.png">
-</a>
-</div>
--->
+  OFFSETS.forEach((offset, i) => {
+    const angle = (progress + offset) * Math.PI * 2 - Math.PI / 2;
+    const sx = cx + R * Math.cos(angle);
+    const sy = cy + R * Math.sin(angle);
 
-</div>
+    const dx = sx - cx, dy = sy - cy;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const ux = dx / dist, uy = dy / dist;
 
+    const x1 = cx + ux * rCenter;
+    const y1 = cy + uy * rCenter;
+    const x2 = sx - ux * rSat;
+    const y2 = sy - uy * rSat;
+
+    lines[i].setAttribute('x1', x1); lines[i].setAttribute('y1', y1);
+    lines[i].setAttribute('x2', x2); lines[i].setAttribute('y2', y2);
+    ams[i].setAttribute('path', `M ${x1},${y1} L ${x2},${y2}`);
+  });
+
+  requestAnimationFrame(tick);
+}
+
+requestAnimationFrame(tick);
+
+function openModal(type){
+  const t = document.getElementById("title"), c = document.getElementById("text");
+  if(type==="privacy"){ t.innerText="Privacy Policy"; c.innerHTML="Questo sito non raccoglie direttamente dati personali."; }
+  if(type==="cookie") { t.innerText="Cookie Policy";  c.innerHTML="Il sito utilizza cookie tecnici necessari."; }
+  if(type==="termini"){ t.innerText="Termini";        c.innerHTML="Questo sito ha finalità informativa."; }
+  document.getElementById("modal").style.display="flex";
+}
+function closeModal(){ document.getElementById("modal").style.display="none"; }
+
+function acceptCookies(){ localStorage.setItem("cookies","accepted"); document.getElementById("cookieBanner").style.display="none"; }
+function rejectCookies(){ localStorage.setItem("cookies","rejected"); document.getElementById("cookieBanner").style.display="none"; }
+window.onload = function(){
+  const status = localStorage.getItem("cookies");
+  if(status !== "accepted" && status !== "rejected"){ document.getElementById("cookieBanner").style.display="flex"; }
+};
+</script>
 </body>
 </html>
