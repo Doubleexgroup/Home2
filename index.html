@@ -22,6 +22,8 @@ flex-direction:column;
 min-height:100vh;
 }
 
+/* MAIN */
+
 main{
 
 flex:1;
@@ -32,75 +34,55 @@ justify-content:center;
 
 align-items:center;
 
-padding-top:60px;
+padding:40px;
 
 }
 
-/* CONTAINER */
+/* GRID MOLECOLA */
 
 .molecule{
 
 position:relative;
 
-width:760px;
-
-height:540px;
+width:800px;
 
 max-width:95vw;
 
-}
+display:grid;
 
-/* LINEE SVG */
+grid-template-columns:1fr 1fr 1fr;
 
-.connections{
+grid-template-rows:auto auto auto;
 
-position:absolute;
-
-width:100%;
-
-height:100%;
-
-top:0;
-
-left:0;
-
-}
-
-.connections line{
-
-stroke:rgba(255,255,255,0.35);
-
-stroke-width:2;
-
-transition:0.4s;
-
-}
-
-/* GLOW QUANDO HOVER */
-
-.molecule:hover .connections line{
-
-stroke:rgba(255,255,255,0.6);
-
-}
-
-/* LOGHI */
-
-.logo{
-
-position:absolute;
-
-display:flex;
-
-justify-content:center;
+justify-items:center;
 
 align-items:center;
 
 }
 
+/* LINEE */
+
+.lines{
+
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+pointer-events:none;
+
+}
+
+/* LOGHI */
+
 .logo img{
 
-transition:0.35s;
+transition:.35s;
 
 }
 
@@ -110,19 +92,17 @@ transform:scale(1.15);
 
 filter:
 drop-shadow(0 0 12px rgba(255,255,255,0.9))
-drop-shadow(0 0 20px rgba(255,255,255,0.6));
+drop-shadow(0 0 25px rgba(255,255,255,0.5));
 
 }
 
-/* POSIZIONI */
+/* POSIZIONI GRID */
 
 .main-logo{
 
-top:0;
+grid-column:2;
 
-left:50%;
-
-transform:translateX(-50%);
+grid-row:1;
 
 }
 
@@ -132,13 +112,11 @@ width:420px;
 
 }
 
-/* SINISTRA */
-
 .home{
 
-top:230px;
+grid-column:1;
 
-left:0;
+grid-row:2;
 
 }
 
@@ -148,13 +126,11 @@ width:200px;
 
 }
 
-/* DESTRA */
-
 .roma{
 
-top:230px;
+grid-column:3;
 
-right:0;
+grid-row:2;
 
 }
 
@@ -164,15 +140,11 @@ width:200px;
 
 }
 
-/* BASSO */
-
 .dinner{
 
-bottom:0;
+grid-column:2;
 
-left:50%;
-
-transform:translateX(-50%);
+grid-row:3;
 
 }
 
@@ -195,18 +167,6 @@ color:#561b6d;
 border-top:1px solid #561b6d;
 
 margin-bottom:50px;
-
-}
-
-.footer-section{
-
-margin-bottom:18px;
-
-}
-
-.contact-item{
-
-margin-bottom:6px;
 
 }
 
@@ -236,36 +196,6 @@ color:#54196d;
 
 }
 
-/* RESPONSIVE */
-
-@media(max-width:700px){
-
-.molecule{
-
-height:480px;
-
-}
-
-.main-logo img{
-
-width:260px;
-
-}
-
-.home img,.roma img{
-
-width:140px;
-
-}
-
-.dinner img{
-
-width:180px;
-
-}
-
-}
-
 </style>
 
 </head>
@@ -276,21 +206,21 @@ width:180px;
 
 <div class="molecule">
 
-<!-- LINEE MOLECOLARI -->
+<svg class="lines" viewBox="0 0 800 500">
 
-<svg class="connections" viewBox="0 0 760 540">
+<line x1="400" y1="90" x2="160" y2="250"
+stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
 
-<line x1="380" y1="110" x2="100" y2="270"/>
+<line x1="400" y1="90" x2="640" y2="250"
+stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
 
-<line x1="380" y1="110" x2="660" y2="270"/>
+<line x1="160" y1="250" x2="400" y2="420"
+stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
 
-<line x1="100" y1="270" x2="380" y2="470"/>
-
-<line x1="660" y1="270" x2="380" y2="470"/>
+<line x1="640" y1="250" x2="400" y2="420"
+stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
 
 </svg>
-
-<!-- LOGHI -->
 
 <div class="logo main-logo">
 <img src="Group2 no sfondo.png">
@@ -314,19 +244,19 @@ width:180px;
 
 <footer>
 
-<div class="footer-section">
+<div>
 
 <h3>Contatti</h3>
 
-<div class="contact-item">
+<div>
 <i class="fas fa-phone"></i> +39 3755248477
 </div>
 
-<div class="contact-item">
+<div>
 <i class="fas fa-envelope"></i> info@doubleexgroup.com
 </div>
 
-<div class="contact-item">
+<div>
 <i class="fas fa-map-marker-alt"></i> Via Pomarico 58, 00178 Roma
 </div>
 
@@ -336,32 +266,15 @@ width:180px;
 
 © 2026 Doubleexgroup LTD |
 
-<a onclick="openModal('privacy')">Privacy</a> |
+<a onclick="alert('Privacy policy')">Privacy</a> |
 
-<a onclick="openModal('cookie')">Cookie</a> |
+<a onclick="alert('Cookie policy')">Cookie</a> |
 
-<a onclick="openModal('termini')">Termini</a>
+<a onclick="alert('Termini')">Termini</a>
 
 </div>
 
 </footer>
-
-<script>
-
-function openModal(type){
-
-if(type==="privacy")
-alert("Questo sito non raccoglie dati personali.");
-
-if(type==="cookie")
-alert("Il sito utilizza cookie tecnici necessari.");
-
-if(type==="termini")
-alert("Questo sito ha finalità informativa.");
-
-}
-
-</script>
 
 </body>
 </html>
