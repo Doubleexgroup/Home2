@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Doubleex Group</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+:root{
+--line:rgba(255,255,255,0.25);
+--glow:rgba(255,255,255,0.9);
+}
+
+html,body{
+margin:0;
+padding:0;
+min-height:100vh;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+color:#fff;
+overflow-x:hidden;
+}
+
+body{
+background:url("sfondogrigio.jpg") center/cover no-repeat fixed;
+display:flex;
+flex-direction:column;
+}
+
+/* PARTICLES */
+
+#particles{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:0;
+}
+
+/* MAIN */
+
+main{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:60px 20px;
+position:relative;
+z-index:2;
+}
+
+/* MOLECULE */
+
+.molecule{
+position:relative;
+width:720px;
+max-width:95vw;
+height:540px;
+}
+
+/* LOGHI */
+
+.logo{
+position:absolute;
+display:flex;
+justify-content:center;
+align-items:center;
+animation:float 7s ease-in-out infinite;
+opacity:0;
+animation:float 7s ease-in-out infinite, appear 1.4s forwards;
+}
+
+.logo img{
+transition:all .35s ease;
+}
+
+.logo img:hover{
+transform:scale(1.18);
+filter:
+drop-shadow(0 0 15px var(--glow))
+drop-shadow(0 0 30px rgba(255,255,255,0.5));
+}
+
+/* POSIZIONI */
+
+.main-logo{
+top:0;
+left:50%;
+transform:translateX(-50%);
+animation-delay:.2s;
+}
+
+.main-logo img{
+width:420px;
+}
+
+.home{
+left:0;
+top:230px;
+animation-delay:.5s;
+}
+
+.home img{
+width:200px;
+}
+
+.roma{
+right:0;
+top:230px;
+animation-delay:.7s;
+}
+
+.roma img{
+width:200px;
+}
+
+.dinner{
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+animation-delay:.9s;
+}
+
+.dinner img{
+width:260px;
+}
+
+/* LINEE */
+
+.line{
+position:absolute;
+background:var(--line);
+animation:pulse 4s infinite;
+}
+
+.line1{
+width:2px;
+height:200px;
+left:50%;
+top:120px;
+}
+
+.line2{
+width:260px;
+height:2px;
+left:80px;
+top:320px;
+}
+
+.line3{
+width:260px;
+height:2px;
+right:80px;
+top:320px;
+}
+
+.line4{
+width:2px;
+height:180px;
+left:50%;
+bottom:90px;
+}
+
+/* ANIMAZIONI */
+
+@keyframes float{
+0%{transform:translateY(0px)}
+50%{transform:translateY(-12px)}
+100%{transform:translateY(0px)}
+}
+
+@keyframes appear{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+@keyframes pulse{
+0%{opacity:.2}
+50%{opacity:.6}
+100%{opacity:.2}
+}
+
+/* FOOTER */
+
+footer{
+padding:35px 20px;
+text-align:center;
+background:transparent;
+backdrop-filter:blur(3px);
+color:#561b6d;
+border-top:1px solid #561b6d;
+margin-bottom:50px;
+z-index:2;
+}
+
+.footer-section{
+margin-bottom:18px;
+}
+
+.footer-section h3{
+margin-bottom:10px;
+}
+
+.contact-item{
+margin-bottom:6px;
+}
+
+.footer-bottom{
+border-top:1px solid rgba(255,255,255,0.2);
+padding-top:10px;
+font-size:0.85rem;
+}
+
+.footer-bottom a{
+cursor:pointer;
+color:#561b6d;
+text-decoration:none;
+}
+
+.footer-bottom a:hover{
+color:#54196d;
+}
+
+/* MODAL */
+
+#modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.modal-box{
+background:#fff;
+color:#000;
+padding:20px;
+max-width:600px;
+border-radius:8px;
+max-height:80%;
+overflow:auto;
+}
+
+/* COOKIE */
+
+#cookieBanner{
+position:fixed;
+bottom:0;
+width:100%;
+background:#111;
+color:#fff;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+z-index:9999;
+}
+
+.cookie-buttons button{
+margin-left:10px;
+padding:8px 12px;
+border:none;
+cursor:pointer;
+}
+
+.accept{
+background:#2ecc71;
+color:#fff;
+}
+
+.reject{
+background:#e74c3c;
+color:#fff;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+
+.molecule{
+height:600px;
+}
+
+.main-logo img{
+width:260px;
+}
+
+.home img,.roma img{
+width:150px;
+}
+
+.dinner img{
+width:180px;
+}
+
+.line2,.line3{
+width:120px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<main>
+
+<div class="molecule">
+
+<div class="line line1"></div>
+<div class="line line2"></div>
+<div class="line line3"></div>
+<div class="line line4"></div>
+
+<a class="logo main-logo">
+<img src="Group2 no sfondo.png">
+</a>
+
+<a href="https://doubleexhome.com" target="_blank" class="logo home">
+<img src="Home2 no sfondo.png">
+</a>
+
+<a href="https://www.romaprimeliving.it" target="_blank" class="logo roma">
+<img src="Romaliving2.png">
+</a>
+
+<a href="https://dinnerinthesky.it" target="_blank" class="logo dinner">
+<img src="dinner2 no sfondo.png">
+</a>
+
+</div>
+
+</main>
+
+<footer>
+
+<div class="footer-section">
+
+<h3>Contatti</h3>
+
+<div class="contact-item">
+<i class="fas fa-phone"></i> +39 3755248477
+</div>
+
+<div class="contact-item">
+<i class="fas fa-envelope"></i> info@doubleexgroup.com
+</div>
+
+<div class="contact-item">
+<i class="fas fa-map-marker-alt"></i> Via Pomarico 58, Roma
+</div>
+
+</div>
+
+<div class="footer-bottom">
+
+© 2026 Doubleexgroup LTD |
+
+<a onclick="openModal('privacy')">Privacy</a> |
+
+<a onclick="openModal('cookie')">Cookie</a> |
+
+<a onclick="openModal('termini')">Termini</a>
+
+</div>
+
+</footer>
+
+<div id="modal">
+<div class="modal-box">
+<h2 id="title"></h2>
+<div id="text"></div>
+<br>
+<button onclick="closeModal()">Chiudi</button>
+</div>
+</div>
+
+<div id="cookieBanner">
+
+<span>Utilizziamo cookie tecnici e, previo consenso, cookie di analisi e marketing.</span>
+
+<div class="cookie-buttons">
+<button class="accept" onclick="acceptCookies()">Accetta</button>
+<button class="reject" onclick="rejectCookies()">Rifiuta</button>
+</div>
+
+</div>
+
+<script>
+
+/* PARTICELLE */
+
+const canvas=document.getElementById("particles")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let particles=[]
+
+for(let i=0;i<60;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+dx:(Math.random()-0.5)*0.3,
+dy:(Math.random()-0.5)*0.3
+})
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+particles.forEach(p=>{
+
+p.x+=p.dx
+p.y+=p.dy
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+ctx.fillStyle="rgba(255,255,255,0.4)"
+ctx.fill()
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+/* MODAL */
+
+function openModal(type){
+
+let t=document.getElementById("title")
+let c=document.getElementById("text")
+
+if(type==="privacy"){
+t.innerText="Privacy Policy"
+c.innerHTML="Questo sito non raccoglie direttamente dati personali."
+}
+
+if(type==="cookie"){
+t.innerText="Cookie Policy"
+c.innerHTML="Il sito utilizza cookie tecnici necessari."
+}
+
+if(type==="termini"){
+t.innerText="Termini"
+c.innerHTML="Questo sito ha finalità informativa."
+}
+
+document.getElementById("modal").style.display="flex"
+
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none"
+}
+
+/* COOKIE */
+
+function acceptCookies(){
+localStorage.setItem("cookies","accepted")
+document.getElementById("cookieBanner").style.display="none"
+}
+
+function rejectCookies(){
+localStorage.setItem("cookies","rejected")
+document.getElementById("cookieBanner").style.display="none"
+}
+
+window.onload=function(){
+
+const status=localStorage.getItem("cookies")
+
+if(status!=="accepted" && status!=="rejected"){
+document.getElementById("cookieBanner").style.display="flex"
+}
+
+}
+
+</script>
+
+</body>
+</html>
