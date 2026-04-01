@@ -25,7 +25,7 @@
   main{
     flex:1; display:flex; flex-direction:column;
     align-items:center; justify-content:flex-start;
-    text-align:center; padding:30px 20px 10px;
+    text-align:center; padding:30px 20px 120px;
   }
 
   /* ══ SCENA MOLECOLA ══ */
@@ -35,7 +35,8 @@
     height: 1100px;
     max-width: 98vw;
     max-height: 98vw;
-    margin: 0 auto 10px;
+    margin: 0 auto 0;
+    overflow: hidden;
   }
 
   .orbit-svg {
@@ -49,21 +50,11 @@
   }
 
   .orbit-path {
-    fill: none;
-    stroke: rgba(86,27,109,0.45);
-    stroke-width: 1.5;
-    stroke-dasharray: 7 5;
+    display: none;
   }
 
-  .connect-line {
-    stroke: #561b6d;
-    stroke-width: 2.2;
-    stroke-dasharray: 9 6;
-    animation: dashFlow 10s linear infinite;
-  }
-
-  @keyframes dashFlow {
-    to { stroke-dashoffset: -220; }
+  .connect-line, .particle {
+    display: none;
   }
 
   /* ── NODO CENTRALE: ora 600px ── */
@@ -393,10 +384,16 @@
 */
 
 const PLANETS = [
-  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitFactor: 0.31, duration: 55000, startAngle: 0          },
-  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitFactor: 0.39, duration: 75000, startAngle: Math.PI * 0.7  },
-  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitFactor: 0.46, duration: 100000, startAngle: Math.PI * 1.4 },
+  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitBase: 0.42, orbitAmp: 0.05, phasePulse: 0,              duration: 100000 },
+  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitBase: 0.42, orbitAmp: 0.05, phasePulse: Math.PI * 2/3,  duration: 100000 },
+  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitBase: 0.42, orbitAmp: 0.05, phasePulse: Math.PI * 4/3,  duration: 100000 },
 ];
+// Offset angolare fisso tra i tre pianeti (120° ciascuno)
+const START_ANGLES = [0, Math.PI * 2/3, Math.PI * 4/3];
+// Periodo dell'oscillazione radiale (avvicinamento/allontanamento)
+const PULSE_PERIOD = 18000; // ms
+// Distanza minima: raggio centrale (0.273) + raggio satellite (0.109) + margine (0.02)
+const R_MIN_FACTOR = 0.40;
 
 const SCENE_BASE = 1100;
 
@@ -419,23 +416,23 @@ function tick(ts) {
   const rCenter = 300 * scale;
   const elapsed = ts - startTime;
 
-  // Aggiorna i tre cerchi tratteggiati
   PLANETS.forEach((p, i) => {
-    const R = W * p.orbitFactor;
-    orbitCircles[i].setAttribute('cx', cx);
-    orbitCircles[i].setAttribute('cy', cy);
-    orbitCircles[i].setAttribute('r',  R);
-  });
-
-  PLANETS.forEach(p => {
     const satEl  = document.getElementById(p.id);
     const lineEl = document.getElementById(p.lineId);
     const amEl   = document.getElementById(p.amId);
     const rSat   = satEl.offsetWidth / 2;
-    const R      = W * p.orbitFactor;
+
+    // Raggio oscillante: base ± amp * sin(tempo + fase), mai sotto R_MIN
+    const pulse = Math.sin((elapsed / PULSE_PERIOD) * Math.PI * 2 + p.phasePulse);
+    const R = Math.max(W * R_MIN_FACTOR, W * (p.orbitBase + p.orbitAmp * pulse));
+
+    // Aggiorna il cerchio tratteggiato (nascosto ma utile per debug)
+    orbitCircles[i].setAttribute('cx', cx);
+    orbitCircles[i].setAttribute('cy', cy);
+    orbitCircles[i].setAttribute('r',  R);
 
     const progress = (elapsed % p.duration) / p.duration;
-    const angle    = progress * Math.PI * 2 + p.startAngle - Math.PI / 2;
+    const angle    = progress * Math.PI * 2 + START_ANGLES[i] - Math.PI / 2;
 
     const sx = cx + R * Math.cos(angle);
     const sy = cy + R * Math.sin(angle);
@@ -497,4 +494,3 @@ window.onload = function(){
 </script>
 </body>
 </html>
-
