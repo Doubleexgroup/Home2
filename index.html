@@ -74,7 +74,11 @@
     width: 600px; height: 600px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 80%);
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 3px solid rgba(86,27,109,0.75);
+    box-shadow:
+      0 0 0 1px rgba(138,45,181,0.25),
+      inset 0 0 18px rgba(86,27,109,0.18),
+      0 0 18px rgba(86,27,109,0.30);
     backdrop-filter: blur(8px);
     display: flex; align-items: center; justify-content: center;
     z-index: 5;
@@ -89,8 +93,8 @@
   }
 
   @keyframes breathe {
-    from { box-shadow: 0 0 20px rgba(255,255,255,0.08); }
-    to   { box-shadow: 0 0 55px rgba(255,255,255,0.28); }
+    from { box-shadow: 0 0 0 1px rgba(138,45,181,0.25), inset 0 0 18px rgba(86,27,109,0.18), 0 0 20px rgba(86,27,109,0.25); }
+    to   { box-shadow: 0 0 0 2px rgba(138,45,181,0.45), inset 0 0 22px rgba(86,27,109,0.22), 0 0 55px rgba(86,27,109,0.50); }
   }
 
   /* ── NODO SATELLITE — posizionato interamente da JS ── */
@@ -98,10 +102,15 @@
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 80%);
-    border: 1px solid rgba(255,255,255,0.20);
+    /* Cerchio colorato uguale al logo centrale */
+    border: 3px solid rgba(86,27,109,0.75);
+    box-shadow:
+      0 0 0 1px rgba(138,45,181,0.25),
+      inset 0 0 18px rgba(86,27,109,0.18),
+      0 0 18px rgba(86,27,109,0.30);
     backdrop-filter: blur(6px);
     display: flex; align-items: center; justify-content: center;
-    transition: box-shadow .3s;
+    transition: box-shadow .3s, border-color .3s;
     cursor: pointer;
     text-decoration: none;
     pointer-events: all;
@@ -113,7 +122,12 @@
   }
 
   .sat-node:hover {
-    box-shadow: 0 0 30px rgba(255,255,255,0.50), 0 0 65px rgba(255,255,255,0.18);
+    border-color: rgba(138,45,181,0.95);
+    box-shadow:
+      0 0 0 2px rgba(138,45,181,0.50),
+      0 0 35px rgba(138,45,181,0.55),
+      0 0 70px rgba(86,27,109,0.25),
+      inset 0 0 22px rgba(86,27,109,0.20);
   }
 
   .sat-node img {
@@ -171,14 +185,83 @@
 
   /* ── COOKIE ── */
   #cookieBanner{
-    position:fixed; bottom:0; width:100%;
-    background:#111; color:#fff; padding:15px;
-    display:flex; justify-content:space-between;
-    align-items:center; flex-wrap:wrap; z-index:9999;
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 320px;
+    background: rgba(18, 8, 26, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(86,27,109,0.55);
+    border-radius: 18px;
+    padding: 22px 22px 18px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(138,45,181,0.12);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    animation: cookieSlide .45s cubic-bezier(.16,1,.3,1) both;
   }
-  .cookie-buttons button{ margin-left:10px; padding:8px 12px; border:none; cursor:pointer; }
-  .accept{ background:#2ecc71; color:#fff; }
-  .reject{ background:#e74c3c; color:#fff; }
+  @keyframes cookieSlide {
+    from { opacity:0; transform: translateY(20px) scale(.97); }
+    to   { opacity:1; transform: translateY(0)    scale(1);   }
+  }
+  #cookieBanner .cookie-icon {
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+  }
+  #cookieBanner .cookie-title {
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(138,45,181,0.9);
+    margin-bottom: 4px;
+  }
+  #cookieBanner .cookie-text {
+    font-size: .82rem;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.72);
+  }
+  #cookieBanner .cookie-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  #cookieBanner .cookie-actions button {
+    flex: 1;
+    padding: 9px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .2s;
+  }
+  #cookieBanner .cookie-actions button:active {
+    transform: scale(.96);
+  }
+  #cookieBanner .btn-accept {
+    background: linear-gradient(135deg, #7b2fbe, #561b6d);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(86,27,109,0.45);
+  }
+  #cookieBanner .btn-accept:hover {
+    background: linear-gradient(135deg, #9b3fe0, #6e22a0);
+    box-shadow: 0 6px 20px rgba(86,27,109,0.65);
+  }
+  #cookieBanner .btn-reject {
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.12) !important;
+  }
+  #cookieBanner .btn-reject:hover {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75);
+  }
+  @media(max-width:400px){
+    #cookieBanner{ right:12px; bottom:12px; width: calc(100vw - 24px); }
+  }
 
   /* ══ RESPONSIVE ══
      Scala proporzionale: centro = scena * 0.545, satellite = scena * 0.218
@@ -223,7 +306,9 @@
           <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
-      <circle class="orbit-path" id="orbitCircle" cx="550" cy="550" r="420"/>
+      <circle class="orbit-path" id="orbitCircle1" cx="550" cy="550" r="340"/>
+      <circle class="orbit-path" id="orbitCircle2" cx="550" cy="550" r="430"/>
+      <circle class="orbit-path" id="orbitCircle3" cx="550" cy="550" r="510"/>
       <line id="line1" class="connect-line"/>
       <line id="line2" class="connect-line" style="animation-delay:-3.3s"/>
       <line id="line3" class="connect-line" style="animation-delay:-6.6s"/>
@@ -261,7 +346,7 @@
     <div class="footer-section">
       <h3>Contatti</h3>
       <div class="contact-item"><i class="fas fa-phone"></i> <a href="tel:+393755248477">+39 3755248477</a></div>
-      <div class="contact-item"><i class="fas fa-at"></i> <a href="mailto:info@doubleexgroup.com">info@doubleexgroup.com</a></div>
+      <div class="contact-item"><i class="fas fa-at"></i> <a href="/cdn-cgi/l/email-protection#fb92959d94bb9f948e99979e9e839c89948e8bd5989496"><span class="__cf_email__" data-cfemail="ee87808881ae8a819b8c828b8b96899c819b9ec08d8183">[email&#160;protected]</span></a></div>
       <div class="contact-item"><i class="fas fa-location-dot"></i> <a href="https://www.google.com/maps/search/?api=1&query=Via+Pomarico+58+00178+Roma" target="_blank" rel="noopener">Via Pomarico 58, 00178 Roma</a></div>
     </div>
     <div class="footer-bottom">
@@ -283,42 +368,46 @@
 </div>
 
 <div id="cookieBanner">
-  <span>Utilizziamo cookie tecnici e, previo consenso, cookie di analisi e marketing.</span>
-  <div class="cookie-buttons">
-    <button class="accept" onclick="acceptCookies()">Accetta</button>
-    <button class="reject" onclick="rejectCookies()">Rifiuta</button>
+  <div>
+    <div class="cookie-icon">🍪</div>
+    <div class="cookie-title">Cookie &amp; Privacy</div>
+    <div class="cookie-text">Utilizziamo cookie tecnici e, previo consenso, cookie di analisi e marketing per migliorare la tua esperienza.</div>
+  </div>
+  <div class="cookie-actions">
+    <button class="btn-accept" onclick="acceptCookies()">Accetta</button>
+    <button class="btn-reject" onclick="rejectCookies()">Rifiuta</button>
   </div>
 </div>
 
 <script>
 /*
-  Approccio: tutto il posizionamento dei satelliti avviene in JS.
-  Niente CSS orbit-arm / counterSpin → le linee sono sempre perfettamente allineate
-  perché usiamo le stesse coordinate (sx, sy) sia per posizionare il nodo
-  che per disegnare la linea e l'animateMotion.
+  Sistema planetario: ogni satellite ha il suo raggio orbitale e velocità propria.
+  Scena base 1100px, rCenter = 300 (600/2).
 
-  Costanti base (scena 1100px):
-    R orbita  = scena * 0.40 = 440
-    rCenter   = 600/2 = 300
-    rSat      = 240/2 = 120
+  Raggi orbitali base (proporzioni tipo sistema solare — distanze crescenti):
+    sat1 (interno):  R = 1100 * 0.31 ≈ 340   durata 55s  (più vicino, più veloce)
+    sat2 (medio):    R = 1100 * 0.39 ≈ 430   durata 75s
+    sat3 (esterno):  R = 1100 * 0.46 ≈ 510   durata 100s (più lontano, più lento)
+
+  Angolo iniziale sfalsato per una composizione visivamente bilanciata.
 */
 
-const ORBIT_DURATION = 70000; // ms per giro completo
-const OFFSETS        = [0, 1/3, 2/3];
-const SCENE_BASE     = 1100;
+const PLANETS = [
+  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitFactor: 0.31, duration: 55000, startAngle: 0          },
+  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitFactor: 0.39, duration: 75000, startAngle: Math.PI * 0.7  },
+  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitFactor: 0.46, duration: 100000, startAngle: Math.PI * 1.4 },
+];
 
-const sats    = [document.getElementById('sat1'), document.getElementById('sat2'), document.getElementById('sat3')];
-const lines   = [document.getElementById('line1'), document.getElementById('line2'), document.getElementById('line3')];
-const ams     = [document.getElementById('am1'), document.getElementById('am2'), document.getElementById('am3')];
-const orbitCircle = document.getElementById('orbitCircle');
-const scene   = document.getElementById('scene');
+const SCENE_BASE = 1100;
+
+const orbitCircles = [
+  document.getElementById('orbitCircle1'),
+  document.getElementById('orbitCircle2'),
+  document.getElementById('orbitCircle3'),
+];
+
+const scene = document.getElementById('scene');
 let startTime = null;
-
-function getSatRadius(W) {
-  // Stessa scala applicata al CSS: satellite = 240 * (W/1100)
-  // ma prendiamo il valore reale dal DOM per essere precisi
-  return sats[0].offsetWidth / 2;
-}
 
 function tick(ts) {
   if (!startTime) startTime = ts;
@@ -326,32 +415,34 @@ function tick(ts) {
   const W  = scene.offsetWidth;
   const cx = W / 2;
   const cy = W / 2;
-
   const scale   = W / SCENE_BASE;
-  const R       = W * 0.40;           // raggio orbita
-  const rCenter = 300 * scale;        // raggio cerchio centrale (600/2)
-  const rSat    = getSatRadius(W);    // raggio cerchio satellite, dal DOM
+  const rCenter = 300 * scale;
+  const elapsed = ts - startTime;
 
-  // Aggiorna il cerchio tratteggiato dell'orbita
-  orbitCircle.setAttribute('cx', cx);
-  orbitCircle.setAttribute('cy', cy);
-  orbitCircle.setAttribute('r',  R);
+  // Aggiorna i tre cerchi tratteggiati
+  PLANETS.forEach((p, i) => {
+    const R = W * p.orbitFactor;
+    orbitCircles[i].setAttribute('cx', cx);
+    orbitCircles[i].setAttribute('cy', cy);
+    orbitCircles[i].setAttribute('r',  R);
+  });
 
-  const elapsed  = ts - startTime;
-  const progress = (elapsed % ORBIT_DURATION) / ORBIT_DURATION;
+  PLANETS.forEach(p => {
+    const satEl  = document.getElementById(p.id);
+    const lineEl = document.getElementById(p.lineId);
+    const amEl   = document.getElementById(p.amId);
+    const rSat   = satEl.offsetWidth / 2;
+    const R      = W * p.orbitFactor;
 
-  OFFSETS.forEach((offset, i) => {
-    const angle = (progress + offset) * Math.PI * 2 - Math.PI / 2;
+    const progress = (elapsed % p.duration) / p.duration;
+    const angle    = progress * Math.PI * 2 + p.startAngle - Math.PI / 2;
 
-    // Posizione centro del satellite
     const sx = cx + R * Math.cos(angle);
     const sy = cy + R * Math.sin(angle);
 
-    // Posiziona il nodo satellite (transform: translate(-50%,-50%) già nel CSS)
-    sats[i].style.left = sx + 'px';
-    sats[i].style.top  = sy + 'px';
+    satEl.style.left = sx + 'px';
+    satEl.style.top  = sy + 'px';
 
-    // Punti della linea di connessione (bordo centrale → bordo satellite)
     const dx = sx - cx, dy = sy - cy;
     const dist = Math.sqrt(dx*dx + dy*dy);
     const ux = dx / dist, uy = dy / dist;
@@ -361,9 +452,9 @@ function tick(ts) {
     const x2 = sx - ux * rSat;
     const y2 = sy - uy * rSat;
 
-    lines[i].setAttribute('x1', x1); lines[i].setAttribute('y1', y1);
-    lines[i].setAttribute('x2', x2); lines[i].setAttribute('y2', y2);
-    ams[i].setAttribute('path', `M ${x1},${y1} L ${x2},${y2}`);
+    lineEl.setAttribute('x1', x1); lineEl.setAttribute('y1', y1);
+    lineEl.setAttribute('x2', x2); lineEl.setAttribute('y2', y2);
+    amEl.setAttribute('path', `M ${x1},${y1} L ${x2},${y2}`);
   });
 
   requestAnimationFrame(tick);
@@ -382,11 +473,26 @@ function openModal(type){
 function closeModal(){ document.getElementById("modal").style.display="none"; }
 
 /* ── Cookie banner ── */
-function acceptCookies(){ localStorage.setItem("cookies","accepted"); document.getElementById("cookieBanner").style.display="none"; }
-function rejectCookies(){ localStorage.setItem("cookies","rejected"); document.getElementById("cookieBanner").style.display="none"; }
+function acceptCookies(){
+  localStorage.setItem("cookies","accepted");
+  hideCookieBanner();
+}
+function rejectCookies(){
+  localStorage.setItem("cookies","rejected");
+  hideCookieBanner();
+}
+function hideCookieBanner(){
+  const b = document.getElementById("cookieBanner");
+  b.style.transition = "opacity .3s, transform .3s";
+  b.style.opacity = "0";
+  b.style.transform = "translateY(16px) scale(.97)";
+  setTimeout(() => b.style.display = "none", 320);
+}
 window.onload = function(){
   const status = localStorage.getItem("cookies");
-  if(status !== "accepted" && status !== "rejected"){ document.getElementById("cookieBanner").style.display="flex"; }
+  if(status !== "accepted" && status !== "rejected"){
+    document.getElementById("cookieBanner").style.display = "flex";
+  }
 };
 </script>
 </body>
