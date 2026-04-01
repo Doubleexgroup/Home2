@@ -11,10 +11,12 @@
     --text:#ffffff;
   }
 
-  html,body{
+  html, body {
     margin:0; padding:0; min-height:100vh;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     color:var(--text);
+    overflow-x: hidden;
+    width: 100%;
   }
 
   body{
@@ -25,18 +27,18 @@
   main{
     flex:1; display:flex; flex-direction:column;
     align-items:center; justify-content:flex-start;
-    text-align:center; padding:30px 20px 120px;
+    text-align:center; padding:30px 0 10px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   /* ══ SCENA MOLECOLA ══ */
   .molecule-scene {
     position: relative;
-    width: 1100px;
-    height: 1100px;
-    max-width: 98vw;
-    max-height: 98vw;
-    margin: 0 auto 0;
-    overflow: hidden;
+    width: min(1100px, 96vw);
+    height: min(1100px, 96vw);
+    margin: 0 auto;
+    flex-shrink: 0;
   }
 
   .orbit-svg {
@@ -62,7 +64,7 @@
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px; height: 600px;
+    width: min(600px, 52.3vw); height: min(600px, 52.3vw);
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 80%);
     border: 3px solid rgba(86,27,109,0.75);
@@ -106,8 +108,7 @@
     text-decoration: none;
     pointer-events: all;
     z-index: 10;
-    /* dimensione base (>1100px): 240px */
-    width: 240px; height: 240px;
+    width: min(240px, 20.9vw); height: min(240px, 20.9vw);
     /* Il transform-origin deve essere il centro del nodo */
     transform: translate(-50%, -50%);
   }
@@ -255,33 +256,30 @@
   }
 
   /* ══ RESPONSIVE ══
-     Scala proporzionale: centro = scena * 0.545, satellite = scena * 0.218
-     R orbita = scena * 0.40
+     La scena usa sempre min(1100px, 96vw) come dimensione.
+     Tutti gli elementi scalano proporzionalmente via JS (W/SCENE_BASE).
+     Il CSS fissa solo la dimensione della scena e dei nodi per evitare
+     layout shift prima che JS calcoli le posizioni.
   */
-  @media(max-width:1100px){
-    .molecule-scene{ width:820px; height:820px; }
-    .node-center{ width:448px; height:448px; }
-    .sat-node{ width:179px; height:179px; }
+
+  /* Previene scroll orizzontale su qualsiasi schermo */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
   }
-  @media(max-width:900px){
-    .molecule-scene{ width:660px; height:660px; }
-    .node-center{ width:360px; height:360px; }
-    .sat-node{ width:144px; height:144px; }
-    main{ padding:24px 16px 10px; }
+
+  @media(max-width:1140px){
+    .molecule-scene{ width:96vw; height:96vw; }
+    .node-center{ width:52.3vw; height:52.3vw; }
+    .sat-node{ width:20.9vw; height:20.9vw; }
   }
   @media(max-width:600px){
-    .molecule-scene{ width:470px; height:470px; }
-    .node-center{ width:256px; height:256px; }
-    .sat-node{ width:103px; height:103px; }
-    main{ padding:16px 10px 8px; }
+    main{ padding:12px 0 8px; }
     footer{ padding:0 12px 36px; font-size:14px; }
     .contact-item{ font-size:13px; }
-    .cookie-buttons button{ margin-left:6px; padding:6px 10px; font-size:13px; }
   }
   @media(max-width:380px){
-    .molecule-scene{ width:360px; height:360px; }
-    .node-center{ width:196px; height:196px; }
-    .sat-node{ width:78px; height:78px; }
+    main{ padding:8px 0 6px; }
   }
 </style>
 </head>
@@ -384,16 +382,14 @@
 */
 
 const PLANETS = [
-  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitBase: 0.42, orbitAmp: 0.05, phasePulse: 0,              duration: 100000 },
-  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitBase: 0.42, orbitAmp: 0.05, phasePulse: Math.PI * 2/3,  duration: 100000 },
-  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitBase: 0.42, orbitAmp: 0.05, phasePulse: Math.PI * 4/3,  duration: 100000 },
+  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: 0,              duration: 100000 },
+  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: Math.PI * 2/3,  duration: 100000 },
+  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: Math.PI * 4/3,  duration: 100000 },
 ];
-// Offset angolare fisso tra i tre pianeti (120° ciascuno)
-const START_ANGLES = [0, Math.PI * 2/3, Math.PI * 4/3];
-// Periodo dell'oscillazione radiale (avvicinamento/allontanamento)
-const PULSE_PERIOD = 18000; // ms
-// Distanza minima: raggio centrale (0.273) + raggio satellite (0.109) + margine (0.02)
-const R_MIN_FACTOR = 0.40;
+const START_ANGLES  = [0, Math.PI * 2/3, Math.PI * 4/3];
+const PULSE_PERIOD  = 18000;
+// minimo sicuro: rCenter(0.273) + rSat(0.109) + margine(0.015) ≈ 0.397 → arrotondato a 0.30 per lasciare spazio
+const R_MIN_FACTOR  = 0.30;
 
 const SCENE_BASE = 1100;
 
@@ -422,9 +418,13 @@ function tick(ts) {
     const amEl   = document.getElementById(p.amId);
     const rSat   = satEl.offsetWidth / 2;
 
-    // Raggio oscillante: base ± amp * sin(tempo + fase), mai sotto R_MIN
-    const pulse = Math.sin((elapsed / PULSE_PERIOD) * Math.PI * 2 + p.phasePulse);
-    const R = Math.max(W * R_MIN_FACTOR, W * (p.orbitBase + p.orbitAmp * pulse));
+    // Raggio oscillante: si avvicina e allontana visibilmente
+    const pulse   = Math.sin((elapsed / PULSE_PERIOD) * Math.PI * 2 + p.phasePulse);
+    const R_raw   = W * (p.orbitBase + p.orbitAmp * pulse);
+    // clamp: mai dentro il cerchio centrale+satellite, mai fuori dalla scena
+    const R_min   = rCenter + rSat + 6;
+    const R_MAX   = W * 0.5 - rSat - 6;
+    const R       = Math.min(R_MAX, Math.max(R_min, R_raw));
 
     // Aggiorna il cerchio tratteggiato (nascosto ma utile per debug)
     orbitCircles[i].setAttribute('cx', cx);
