@@ -59,7 +59,7 @@
     display: none;
   }
 
-  /* ── NODO CENTRALE: ora 600px ── */
+  /* ── NODO CENTRALE ── */
   .node-center {
     position: absolute;
     top: 50%; left: 50%;
@@ -90,12 +90,11 @@
     to   { box-shadow: 0 0 0 2px rgba(138,45,181,0.45), inset 0 0 22px rgba(86,27,109,0.22), 0 0 55px rgba(86,27,109,0.50); }
   }
 
-  /* ── NODO SATELLITE — posizionato interamente da JS ── */
+  /* ── NODO SATELLITE ── */
   .sat-node {
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 80%);
-    /* Cerchio colorato uguale al logo centrale */
     border: 3px solid rgba(86,27,109,0.75);
     box-shadow:
       0 0 0 1px rgba(138,45,181,0.25),
@@ -109,7 +108,6 @@
     pointer-events: all;
     z-index: 10;
     width: min(240px, 20.9vw); height: min(240px, 20.9vw);
-    /* Il transform-origin deve essere il centro del nodo */
     transform: translate(-50%, -50%);
   }
 
@@ -127,6 +125,11 @@
     pointer-events: none;
     user-select: none;
     transition: filter .3s;
+  }
+
+  /* Logo Living più grande */
+  #sat2 img {
+    width: 93%;
   }
 
   .sat-node:hover img {
@@ -163,76 +166,196 @@
   .footer-bottom a{ cursor:pointer; color:#561b6d; text-decoration:none; }
   .footer-bottom a:hover{ color:#54196d; }
 
-  /* ── MODAL ── */
-  #modal{
-    display:none; position:fixed; top:0; left:0;
-    width:100%; height:100%; background:rgba(0,0,0,0.8);
-    justify-content:center; align-items:center; z-index:9999;
-  }
-  .modal-box{
-    background:#fff; color:#000; padding:20px;
-    max-width:600px; border-radius:8px;
-    max-height:80%; overflow:auto;
+  /* ══ MODAL ELEGANTE ══ */
+  #modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
   }
 
-  /* ── COOKIE ── */
-  #cookieBanner{
+  #modal.visible {
+    display: flex;
+    animation: modalFadeIn .3s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .modal-box {
+    background: rgba(12, 5, 20, 0.88);
+    border: 1px solid rgba(138, 45, 181, 0.45);
+    border-radius: 20px;
+    padding: 36px 40px 32px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow:
+      0 0 0 1px rgba(138,45,181,0.15),
+      0 24px 80px rgba(0,0,0,0.6),
+      0 0 60px rgba(86,27,109,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: modalSlideUp .35s cubic-bezier(.16,1,.3,1) both;
+    position: relative;
+  }
+
+  @keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(24px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+
+  .modal-box::-webkit-scrollbar { width: 4px; }
+  .modal-box::-webkit-scrollbar-track { background: transparent; }
+  .modal-box::-webkit-scrollbar-thumb { background: rgba(138,45,181,0.4); border-radius: 2px; }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(138,45,181,0.25);
+  }
+
+  .modal-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(138,45,181,0.18);
+    border: 1px solid rgba(138,45,181,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  #modal-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: rgba(255,255,255,0.95);
+    margin: 0 0 0 12px;
+    flex: 1;
+    text-align: left;
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s, color .2s, border-color .2s;
+    flex-shrink: 0;
+  }
+
+  .modal-close:hover {
+    background: rgba(138,45,181,0.25);
+    border-color: rgba(138,45,181,0.50);
+    color: #fff;
+  }
+
+  #modal-text {
+    color: rgba(255,255,255,0.72);
+    font-size: .92rem;
+    line-height: 1.75;
+    text-align: left;
+  }
+
+  #modal-text h4 {
+    color: rgba(255,255,255,0.90);
+    font-size: .95rem;
+    margin: 20px 0 8px;
+    font-weight: 600;
+  }
+
+  #modal-text p { margin: 0 0 12px; }
+
+  .modal-footer {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(138,45,181,0.20);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .modal-btn {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #7b2fbe, #561b6d);
+    color: #fff;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(86,27,109,0.45);
+    transition: background .2s, box-shadow .2s, transform .15s;
+    letter-spacing: .02em;
+  }
+
+  .modal-btn:hover {
+    background: linear-gradient(135deg, #9b3fe0, #6e22a0);
+    box-shadow: 0 6px 22px rgba(86,27,109,0.65);
+    transform: translateY(-1px);
+  }
+
+  .modal-btn:active { transform: scale(.97); }
+
+  /* ── COOKIE BANNER ── */
+  #cookieBanner {
     position: fixed;
     bottom: 28px;
     right: 28px;
     width: 320px;
-    background: rgba(18, 8, 26, 0.82);
+    background: rgba(12, 5, 20, 0.88);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border: 1px solid rgba(86,27,109,0.55);
     border-radius: 18px;
     padding: 22px 22px 18px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(138,45,181,0.12);
-    z-index: 9999;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(138,45,181,0.12), 0 0 30px rgba(86,27,109,0.2);
+    z-index: 9998;
     display: none;
     flex-direction: column;
     gap: 16px;
     animation: cookieSlide .45s cubic-bezier(.16,1,.3,1) both;
   }
+
   @keyframes cookieSlide {
     from { opacity:0; transform: translateY(20px) scale(.97); }
     to   { opacity:1; transform: translateY(0)    scale(1);   }
   }
-  #cookieBanner .cookie-icon {
-    font-size: 1.5rem;
-    margin-bottom: 2px;
-  }
+
+  #cookieBanner .cookie-icon { font-size: 1.5rem; margin-bottom: 2px; }
   #cookieBanner .cookie-title {
-    font-size: .78rem;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: rgba(138,45,181,0.9);
-    margin-bottom: 4px;
+    font-size: .78rem; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(138,45,181,0.9); margin-bottom: 4px;
   }
   #cookieBanner .cookie-text {
-    font-size: .82rem;
-    line-height: 1.55;
+    font-size: .82rem; line-height: 1.55;
     color: rgba(255,255,255,0.72);
   }
-  #cookieBanner .cookie-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 2px;
-  }
+  #cookieBanner .cookie-actions { display: flex; gap: 10px; margin-top: 2px; }
   #cookieBanner .cookie-actions button {
-    flex: 1;
-    padding: 9px 0;
-    border: none;
-    border-radius: 10px;
-    font-size: .82rem;
-    font-weight: 600;
+    flex: 1; padding: 9px 0; border: none;
+    border-radius: 10px; font-size: .82rem; font-weight: 600;
     cursor: pointer;
     transition: transform .15s, box-shadow .15s, background .2s;
   }
-  #cookieBanner .cookie-actions button:active {
-    transform: scale(.96);
-  }
+  #cookieBanner .cookie-actions button:active { transform: scale(.96); }
   #cookieBanner .btn-accept {
     background: linear-gradient(135deg, #7b2fbe, #561b6d);
     color: #fff;
@@ -251,22 +374,13 @@
     background: rgba(255,255,255,0.12);
     color: rgba(255,255,255,0.75);
   }
+
   @media(max-width:400px){
     #cookieBanner{ right:12px; bottom:12px; width: calc(100vw - 24px); }
   }
 
-  /* ══ RESPONSIVE ══
-     La scena usa sempre min(1100px, 96vw) come dimensione.
-     Tutti gli elementi scalano proporzionalmente via JS (W/SCENE_BASE).
-     Il CSS fissa solo la dimensione della scena e dei nodi per evitare
-     layout shift prima che JS calcoli le posizioni.
-  */
-
-  /* Previene scroll orizzontale su qualsiasi schermo */
-  html, body {
-    overflow-x: hidden;
-    width: 100%;
-  }
+  /* ══ RESPONSIVE ══ */
+  html, body { overflow-x: hidden; width: 100%; }
 
   @media(max-width:1140px){
     .molecule-scene{ width:96vw; height:96vw; }
@@ -277,6 +391,7 @@
     main{ padding:12px 0 8px; }
     footer{ padding:0 12px 36px; font-size:14px; }
     .contact-item{ font-size:13px; }
+    .modal-box{ padding: 24px 22px 20px; }
   }
   @media(max-width:380px){
     main{ padding:8px 0 6px; }
@@ -316,7 +431,6 @@
       <img src="Group2 no sfondo.png" alt="Doubleex Group">
     </div>
 
-    <!-- Satelliti: niente orbit-arm, niente counterSpin CSS — tutto gestito da JS -->
     <a href="https://doubleexhome.com/" target="_blank" class="sat-node" id="sat1">
       <img src="Home2 no sfondo.png" alt="Doubleex Home">
     </a>
@@ -347,15 +461,22 @@
   </div>
 </footer>
 
-<div id="modal">
+<!-- MODAL ELEGANTE -->
+<div id="modal" onclick="handleModalOutsideClick(event)">
   <div class="modal-box">
-    <h2 id="title"></h2>
-    <div id="text"></div>
-    <br>
-    <button onclick="closeModal()">Chiudi</button>
+    <div class="modal-header">
+      <div class="modal-icon" id="modal-icon">🔒</div>
+      <h2 id="modal-title"></h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Chiudi">×</button>
+    </div>
+    <div id="modal-text"></div>
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="closeModal()">Chiudi</button>
+    </div>
   </div>
 </div>
 
+<!-- COOKIE BANNER -->
 <div id="cookieBanner">
   <div>
     <div class="cookie-icon">🍪</div>
@@ -370,26 +491,18 @@
 
 <script>
 /*
-  Sistema planetario: ogni satellite ha il suo raggio orbitale e velocità propria.
-  Scena base 1100px, rCenter = 300 (600/2).
-
-  Raggi orbitali base (proporzioni tipo sistema solare — distanze crescenti):
-    sat1 (interno):  R = 1100 * 0.31 ≈ 340   durata 55s  (più vicino, più veloce)
-    sat2 (medio):    R = 1100 * 0.39 ≈ 430   durata 75s
-    sat3 (esterno):  R = 1100 * 0.46 ≈ 510   durata 100s (più lontano, più lento)
-
-  Angolo iniziale sfalsato per una composizione visivamente bilanciata.
+  Sistema planetario — velocità ridotta.
+  Le duration sono ora 220s / 260s / 310s (circa 2.5x più lente rispetto alle precedenti 100s).
+  Angoli iniziali sfalsati di 120° per una composizione bilanciata.
 */
 
 const PLANETS = [
-  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: 0,              duration: 100000 },
-  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: Math.PI * 2/3,  duration: 100000 },
-  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: Math.PI * 4/3,  duration: 100000 },
+  { id: 'sat1', lineId: 'line1', amId: 'am1', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: 0,              duration: 220000 },
+  { id: 'sat2', lineId: 'line2', amId: 'am2', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: Math.PI * 2/3,  duration: 260000 },
+  { id: 'sat3', lineId: 'line3', amId: 'am3', orbitBase: 0.37, orbitAmp: 0.09, phasePulse: Math.PI * 4/3,  duration: 310000 },
 ];
-const START_ANGLES  = [0, Math.PI * 2/3, Math.PI * 4/3];
-const PULSE_PERIOD  = 18000;
-// minimo sicuro: rCenter(0.273) + rSat(0.109) + margine(0.015) ≈ 0.397 → arrotondato a 0.30 per lasciare spazio
-const R_MIN_FACTOR  = 0.30;
+const START_ANGLES = [0, Math.PI * 2/3, Math.PI * 4/3];
+const PULSE_PERIOD = 18000;
 
 const SCENE_BASE = 1100;
 
@@ -418,15 +531,12 @@ function tick(ts) {
     const amEl   = document.getElementById(p.amId);
     const rSat   = satEl.offsetWidth / 2;
 
-    // Raggio oscillante: si avvicina e allontana visibilmente
     const pulse   = Math.sin((elapsed / PULSE_PERIOD) * Math.PI * 2 + p.phasePulse);
     const R_raw   = W * (p.orbitBase + p.orbitAmp * pulse);
-    // clamp: mai dentro il cerchio centrale+satellite, mai fuori dalla scena
     const R_min   = rCenter + rSat + 6;
     const R_MAX   = W * 0.5 - rSat - 6;
     const R       = Math.min(R_MAX, Math.max(R_min, R_raw));
 
-    // Aggiorna il cerchio tratteggiato (nascosto ma utile per debug)
     orbitCircles[i].setAttribute('cx', cx);
     orbitCircles[i].setAttribute('cy', cy);
     orbitCircles[i].setAttribute('r',  R);
@@ -460,37 +570,113 @@ function tick(ts) {
 requestAnimationFrame(tick);
 
 /* ── Modal ── */
-function openModal(type){
-  const t = document.getElementById("title"), c = document.getElementById("text");
-  if(type==="privacy"){ t.innerText="Privacy Policy"; c.innerHTML="Questo sito non raccoglie direttamente dati personali."; }
-  if(type==="cookie") { t.innerText="Cookie Policy";  c.innerHTML="Il sito utilizza cookie tecnici necessari."; }
-  if(type==="termini"){ t.innerText="Termini";        c.innerHTML="Questo sito ha finalità informativa."; }
-  document.getElementById("modal").style.display="flex";
-}
-function closeModal(){ document.getElementById("modal").style.display="none"; }
-
-/* ── Cookie banner ── */
-function acceptCookies(){
-  localStorage.setItem("cookies","accepted");
-  hideCookieBanner();
-}
-function rejectCookies(){
-  localStorage.setItem("cookies","rejected");
-  hideCookieBanner();
-}
-function hideCookieBanner(){
-  const b = document.getElementById("cookieBanner");
-  b.style.transition = "opacity .3s, transform .3s";
-  b.style.opacity = "0";
-  b.style.transform = "translateY(16px) scale(.97)";
-  setTimeout(() => b.style.display = "none", 320);
-}
-window.onload = function(){
-  const status = localStorage.getItem("cookies");
-  if(status !== "accepted" && status !== "rejected"){
-    document.getElementById("cookieBanner").style.display = "flex";
+const MODAL_CONTENT = {
+  privacy: {
+    icon: '🔒',
+    title: 'Privacy Policy',
+    html: `
+      <p>Doubleex Group LTD rispetta la tua privacy e si impegna a proteggere i dati personali degli utenti in conformità al <strong>Regolamento UE 2016/679 (GDPR)</strong>.</p>
+      <h4>Dati raccolti</h4>
+      <p>Questo sito non raccoglie direttamente dati personali degli utenti. Eventuali dati forniti volontariamente tramite i moduli di contatto (nome, email, telefono) sono trattati esclusivamente per rispondere alle richieste ricevute.</p>
+      <h4>Finalità del trattamento</h4>
+      <p>I dati raccolti sono utilizzati unicamente per finalità informative e di risposta alle comunicazioni. Non vengono ceduti a terzi né utilizzati per finalità di marketing senza previo consenso.</p>
+      <h4>Diritti dell'utente</h4>
+      <p>L'utente ha il diritto di accedere, rettificare, cancellare i propri dati e di revocare il consenso in qualsiasi momento, scrivendo a <a href="mailto:info@doubleexgroup.com" style="color:rgba(138,45,181,0.9)">info@doubleexgroup.com</a>.</p>
+    `
+  },
+  cookie: {
+    icon: '🍪',
+    title: 'Cookie Policy',
+    html: `
+      <p>Questo sito utilizza cookie per garantire il corretto funzionamento della navigazione e, previo consenso, cookie analitici e di marketing.</p>
+      <h4>Cookie tecnici (sempre attivi)</h4>
+      <p>Sono necessari per il funzionamento del sito e non richiedono il tuo consenso. Tra questi rientrano i cookie di sessione e le preferenze di navigazione.</p>
+      <h4>Cookie analitici e di profilazione</h4>
+      <p>Utilizzati per comprendere come gli utenti interagiscono con il sito e per personalizzare i contenuti. Vengono attivati solo previo tuo consenso esplicito.</p>
+      <h4>Gestione dei cookie</h4>
+      <p>Puoi modificare le tue preferenze in qualsiasi momento tramite le impostazioni del browser oppure contattandoci a <a href="mailto:info@doubleexgroup.com" style="color:rgba(138,45,181,0.9)">info@doubleexgroup.com</a>.</p>
+    `
+  },
+  termini: {
+    icon: '📄',
+    title: 'Termini di Utilizzo',
+    html: `
+      <p>Questo sito ha finalità esclusivamente informativa e presentativa delle attività di Doubleex Group LTD.</p>
+      <h4>Proprietà intellettuale</h4>
+      <p>Tutti i contenuti presenti su questo sito — testi, immagini, loghi e grafica — sono di proprietà esclusiva di Doubleex Group LTD e sono protetti dalla normativa sul diritto d'autore.</p>
+      <h4>Limitazione di responsabilità</h4>
+      <p>Doubleex Group LTD non si assume alcuna responsabilità per eventuali errori od omissioni nei contenuti del sito, né per i danni derivanti dall'uso delle informazioni ivi contenute.</p>
+      <h4>Legge applicabile</h4>
+      <p>Il presente sito è soggetto alla legge italiana. Per qualsiasi controversia è competente il foro di Roma.</p>
+    `
   }
 };
+
+function openModal(type) {
+  const content = MODAL_CONTENT[type];
+  if (!content) return;
+  document.getElementById('modal-icon').textContent = content.icon;
+  document.getElementById('modal-title').textContent = content.title;
+  document.getElementById('modal-text').innerHTML = content.html;
+  const modal = document.getElementById('modal');
+  modal.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('modal');
+  modal.classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+function handleModalOutsideClick(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ── Cookie banner ── */
+function acceptCookies() {
+  localStorage.setItem('doubleex_cookies', 'accepted');
+  hideCookieBanner();
+}
+
+function rejectCookies() {
+  localStorage.setItem('doubleex_cookies', 'rejected');
+  hideCookieBanner();
+}
+
+function hideCookieBanner() {
+  const b = document.getElementById('cookieBanner');
+  b.style.transition = 'opacity .35s, transform .35s';
+  b.style.opacity = '0';
+  b.style.transform = 'translateY(16px) scale(.97)';
+  setTimeout(() => { b.style.display = 'none'; }, 370);
+}
+
+function showCookieBanner() {
+  const b = document.getElementById('cookieBanner');
+  b.style.display = 'flex';
+}
+
+/*
+  FIX COOKIE BANNER:
+  Il banner non appariva perché il codice originale usava la chiave 'cookies'
+  (troppo generica, poteva essere già settata da altri siti/script in localhost).
+  Ora usiamo 'doubleex_cookies' come chiave univoca.
+  Inoltre usiamo DOMContentLoaded che è più affidabile di window.onload
+  per siti con risorse pesanti (immagini di sfondo grandi).
+*/
+document.addEventListener('DOMContentLoaded', function() {
+  const status = localStorage.getItem('doubleex_cookies');
+  if (status !== 'accepted' && status !== 'rejected') {
+    // Piccolo delay per far terminare il primo render e rendere l'animazione visibile
+    setTimeout(showCookieBanner, 600);
+  }
+});
 </script>
 </body>
 </html>
+
