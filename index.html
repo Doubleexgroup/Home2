@@ -515,14 +515,38 @@
   let satSize = 0;
 
   function computeSizes() {
-    const footerH  = footer.offsetHeight;
-    const availH   = window.innerHeight - footerH;
-    const availW   = window.innerWidth;
-    // La scena deve stare sia in larghezza che in altezza disponibile
+    const footerH = footer.offsetHeight;
+
+    // Usa la risoluzione reale del monitor per il calcolo 16:9
+    const screenW = window.screen.width;
+    const screenH = window.screen.height;
+
+    // Rapporto pixel reale dello schermo
+    const screenRatio = screenW / screenH;
+
+    // Se il monitor è più largo di 16:9 (es. ultrawide), l'altezza utile è vincolata
+    // Se è più stretto (es. verticale/tablet), la larghezza è il vincolo
+    const ratio16_9 = 16 / 9;
+
+    let effectiveH;
+    if (screenRatio >= ratio16_9) {
+      // Monitor wide o 16:9: l'altezza disponibile è quella reale del browser
+      effectiveH = window.innerHeight;
+    } else {
+      // Monitor più "alto" (4:3, tablet verticale): calcoliamo l'altezza come se fosse 16:9 su quella larghezza
+      effectiveH = window.innerWidth / ratio16_9;
+      // Ma non può superare il viewport reale
+      effectiveH = Math.min(effectiveH, window.innerHeight);
+    }
+
+    const availH = effectiveH - footerH;
+    const availW = window.innerWidth;
+
+    // La scena è quadrata: prende il minimo tra larghezza e altezza disponibile
     sceneSize = Math.min(availW * 0.96, availH * 0.96, 1100);
 
-    nodeCenterSize = sceneSize * (600 / 1100);    // proporzione originale 600/1100
-    satSize        = sceneSize * (240 / 1100);    // proporzione originale 240/1100
+    nodeCenterSize = sceneSize * (600 / 1100);
+    satSize        = sceneSize * (240 / 1100);
 
     scene.style.width  = sceneSize + 'px';
     scene.style.height = sceneSize + 'px';
