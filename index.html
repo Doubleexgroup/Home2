@@ -391,6 +391,150 @@
     .modal-box{ padding: 24px 22px 20px; }
     .footer-section h3 { font-size: 0.82rem; }
   }
+
+  /* ══════════════════════════════════════════════════
+     MOBILE RESPONSIVE — aggiunta non invasiva
+     Attivo solo sotto 768px (portrait smartphone).
+     Non modifica nessuna logica JS esistente:
+     sovrascrive solo il posizionamento visuale.
+  ══════════════════════════════════════════════════ */
+  @media (max-width: 768px) and (orientation: portrait) {
+
+    /* Il body torna scrollabile su mobile per ospitare il layout verticale */
+    html, body {
+      height: auto;
+      max-height: none;
+      overflow: auto;
+    }
+
+    main {
+      overflow: visible;
+      padding-top: 20px;
+      padding-bottom: 16px;
+    }
+
+    /* La scena molecolare viene "resettata" come contenitore statico */
+    .molecule-scene {
+      position: relative;
+      width: 100vw !important;
+      height: auto !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* L'SVG delle orbite viene nascosto su mobile: non ha senso senza animazione */
+    .orbit-svg {
+      display: none;
+    }
+
+    /* Nodo centrale: torna al flusso normale, centrato */
+    .node-center {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+      width: 52vw !important;
+      height: 52vw !important;
+      max-width: 220px !important;
+      max-height: 220px !important;
+      margin: 0 auto 28px;
+    }
+
+    /* Contenitore griglia per i 3 satellite */
+    .mobile-sat-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: nowrap;
+      width: 100%;
+      padding: 0 12px;
+      box-sizing: border-box;
+    }
+
+    /* Ogni satellite: dal posizionamento assoluto JS al flusso flex */
+    .sat-node {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+      width: 26vw !important;
+      height: 26vw !important;
+      max-width: 110px !important;
+      max-height: 110px !important;
+      flex-shrink: 0;
+      /* Animazione tap per feedback touch */
+      transition: box-shadow .3s, border-color .3s, transform .15s;
+    }
+
+    .sat-node:active {
+      transform: scale(0.94) !important;
+      box-shadow:
+        0 0 0 2px rgba(138,45,181,0.60),
+        0 0 30px rgba(138,45,181,0.50),
+        inset 0 0 22px rgba(86,27,109,0.25);
+    }
+
+    /* Footer più compatto */
+    footer {
+      padding: 0 16px 14px;
+    }
+
+    .footer-section h3 {
+      font-size: 0.78rem;
+    }
+
+    .contact-item {
+      font-size: 11px;
+      gap: 6px;
+    }
+
+    .footer-bottom {
+      font-size: 0.72rem;
+    }
+
+    /* Modal più snella su mobile */
+    .modal-box {
+      padding: 20px 18px 18px;
+      border-radius: 16px;
+      max-height: 85vh;
+    }
+
+    #modal-title {
+      font-size: 1rem;
+    }
+
+    #modal-text {
+      font-size: .85rem;
+    }
+  }
+
+  /* Landscape mobile: mantieni la scena JS ma riduci le dimensioni */
+  @media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    footer {
+      padding: 0 12px 4px;
+    }
+
+    .footer-section {
+      display: none; /* nasconde i contatti in landscape stretto per fare spazio */
+    }
+
+    .footer-bottom {
+      font-size: 0.70rem;
+      padding-top: 4px;
+    }
+
+    .footer-border {
+      padding-top: 4px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -426,6 +570,7 @@
       <img src="Group2 no sfondo.png" alt="Doubleex Group">
     </div>
 
+    <!-- Su mobile i sat-node vengono spostati fuori dalla scena in una griglia flex -->
     <a href="https://doubleexhome.com/" target="_blank" class="sat-node" id="sat1">
       <img src="Home2 no sfondo.png" alt="Doubleex Home">
     </a>
@@ -633,6 +778,72 @@
   // Ricalcola su resize (es. rotazione mobile)
   window.addEventListener('resize', computeSizes);
 
+  /* ══════════════════════════════════════════════════
+     MOBILE LAYOUT MANAGER — aggiunta non invasiva
+     Riorganizza i sat-node in una griglia flex su mobile
+     senza toccare nessuna variabile o funzione esistente.
+  ══════════════════════════════════════════════════ */
+  (function() {
+    var MOBILE_BP = 768;
+    var grid = null;
+    var isMobileLayout = false;
+
+    function isPortraitMobile() {
+      return window.innerWidth <= MOBILE_BP && window.innerHeight > window.innerWidth;
+    }
+
+    function enableMobileLayout() {
+      if (isMobileLayout) return;
+      isMobileLayout = true;
+
+      // Crea il contenitore griglia se non esiste
+      if (!grid) {
+        grid = document.createElement('div');
+        grid.className = 'mobile-sat-grid';
+        grid.id = 'mobileSatGrid';
+      }
+
+      // Sposta i 3 sat-node dentro la griglia
+      ['sat1', 'sat2', 'sat3'].forEach(function(id) {
+        grid.appendChild(document.getElementById(id));
+      });
+
+      // Inserisce la griglia dopo il nodo centrale, dentro .molecule-scene
+      scene.appendChild(grid);
+    }
+
+    function disableMobileLayout() {
+      if (!isMobileLayout) return;
+      isMobileLayout = false;
+
+      if (!grid) return;
+
+      // Riporta i sat-node nella scena (il JS li riposizionerà via style.left/top)
+      ['sat1', 'sat2', 'sat3'].forEach(function(id) {
+        scene.appendChild(document.getElementById(id));
+      });
+
+      // Rimuove la griglia dal DOM
+      if (grid.parentNode) grid.parentNode.removeChild(grid);
+    }
+
+    function checkLayout() {
+      if (isPortraitMobile()) {
+        enableMobileLayout();
+      } else {
+        disableMobileLayout();
+      }
+    }
+
+    // Esegui subito e ad ogni resize / orientation change
+    checkLayout();
+    window.addEventListener('resize', checkLayout);
+    window.addEventListener('orientationchange', function() {
+      setTimeout(checkLayout, 100);
+    });
+  })();
+  /* ══ fine MOBILE LAYOUT MANAGER ══ */
+
   /* ── Modal ── */
   const MODAL_CONTENT = {
     privacy: {
@@ -734,5 +945,6 @@
 </script>
 </body>
 </html>
+
 
 
