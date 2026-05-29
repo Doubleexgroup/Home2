@@ -392,8 +392,9 @@
   /* ══════════════════════════════════════════════════
      MOBILE RESPONSIVE — aggiunta non invasiva
      Attivo solo sotto 768px (portrait smartphone).
-     Non modifica nessuna logica JS esistente:
-     sovrascrive solo il posizionamento visuale.
+     La rotazione è affidata a .sat-ring e .center-ring
+     (wrapper aggiunti via JS): il cerchio viola gira,
+     l'immagine dentro resta perfettamente ferma.
   ══════════════════════════════════════════════════ */
   @media (max-width: 768px) and (orientation: portrait) {
 
@@ -423,6 +424,7 @@
       display: none;
     }
 
+    /* ── Nodo centrale su mobile ── */
     .node-center {
       position: relative !important;
       top: auto !important;
@@ -433,8 +435,30 @@
       max-width: 220px !important;
       max-height: 220px !important;
       margin: 0 auto 28px;
+      /* togliamo bordo e sfondo: li mette .center-ring */
+      border: none !important;
+      background: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      animation: none !important;
+      overflow: visible !important;
     }
 
+    /* Anello rotante del nodo centrale */
+    .center-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(86,27,109,0.75);
+      box-shadow:
+        0 0 0 1px rgba(138,45,181,0.25),
+        inset 0 0 18px rgba(86,27,109,0.18),
+        0 0 18px rgba(86,27,109,0.30);
+      animation: mobileSpin 14s linear infinite;
+      pointer-events: none;
+    }
+
+    /* ── Griglia satelliti ── */
     .mobile-sat-grid {
       display: flex;
       justify-content: center;
@@ -446,6 +470,7 @@
       box-sizing: border-box;
     }
 
+    /* Il sat-node diventa solo contenitore trasparente */
     .sat-node {
       position: relative !important;
       top: auto !important;
@@ -456,37 +481,50 @@
       max-width: 110px !important;
       max-height: 110px !important;
       flex-shrink: 0;
-      transition: box-shadow .3s, border-color .3s;
-      animation: mobileSpin 8s linear infinite;
+      /* annulliamo bordo/sfondo: li gestisce .sat-ring */
+      border: none !important;
+      background: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      overflow: visible !important;
     }
 
-    .sat-node:active {
+    /* Anello rotante di ogni satellite */
+    .sat-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(86,27,109,0.75);
+      box-shadow:
+        0 0 0 1px rgba(138,45,181,0.25),
+        inset 0 0 18px rgba(86,27,109,0.18),
+        0 0 18px rgba(86,27,109,0.30);
+      pointer-events: none;
+    }
+
+    #sat1 .sat-ring { animation: mobileSpin  7s linear infinite; }
+    #sat2 .sat-ring { animation: mobileSpin  9s linear infinite reverse; }
+    #sat3 .sat-ring { animation: mobileSpin 11s linear infinite; }
+
+    /* Le immagini rimangono assolutamente ferme */
+    .sat-node img {
+      position: relative;
+      z-index: 2;
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .sat-node:active .sat-ring {
+      border-color: rgba(138,45,181,0.95);
       box-shadow:
         0 0 0 2px rgba(138,45,181,0.60),
         0 0 30px rgba(138,45,181,0.50),
         inset 0 0 22px rgba(86,27,109,0.25);
     }
 
-    #sat1 { animation-duration: 7s; }
-    #sat2 { animation-duration: 9s; animation-direction: reverse; }
-    #sat3 { animation-duration: 11s; }
-
-    #sat1 img,
-    #sat2 img,
-    #sat3 img {
-      animation: mobileSpinCounter 7s linear infinite;
-    }
-    #sat2 img { animation-duration: 9s; animation-direction: reverse; }
-    #sat3 img { animation-duration: 11s; animation-direction: normal; }
-
     @keyframes mobileSpin {
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
-    }
-
-    @keyframes mobileSpinCounter {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(-360deg); }
     }
 
     footer {
@@ -767,8 +805,11 @@
 
   /* ══════════════════════════════════════════════════
      MOBILE LAYOUT MANAGER — aggiunta non invasiva
-     Riorganizza i sat-node in una griglia flex su mobile
-     senza toccare nessuna variabile o funzione esistente.
+     Su mobile portrait:
+     - sposta i sat-node in una griglia flex
+     - inietta .sat-ring (cerchio viola che gira) dentro
+       ogni sat-node e .center-ring nel nodo centrale
+     - al ritorno in landscape rimuove tutto e ripristina
   ══════════════════════════════════════════════════ */
   (function() {
     var MOBILE_BP = 768;
@@ -783,15 +824,30 @@
       if (isMobileLayout) return;
       isMobileLayout = true;
 
+      // Griglia flex per i satelliti
       if (!grid) {
         grid = document.createElement('div');
         grid.className = 'mobile-sat-grid';
         grid.id = 'mobileSatGrid';
       }
 
+      // Inietta .sat-ring in ogni sat-node (se non già presente)
       ['sat1', 'sat2', 'sat3'].forEach(function(id) {
-        grid.appendChild(document.getElementById(id));
+        var el = document.getElementById(id);
+        if (!el.querySelector('.sat-ring')) {
+          var ring = document.createElement('div');
+          ring.className = 'sat-ring';
+          el.insertBefore(ring, el.firstChild);
+        }
+        grid.appendChild(el);
       });
+
+      // Inietta .center-ring nel nodo centrale (se non già presente)
+      if (!nodeCenter.querySelector('.center-ring')) {
+        var cr = document.createElement('div');
+        cr.className = 'center-ring';
+        nodeCenter.insertBefore(cr, nodeCenter.firstChild);
+      }
 
       scene.appendChild(grid);
     }
@@ -802,9 +858,17 @@
 
       if (!grid) return;
 
+      // Riporta i sat-node nella scena e rimuove i ring
       ['sat1', 'sat2', 'sat3'].forEach(function(id) {
-        scene.appendChild(document.getElementById(id));
+        var el = document.getElementById(id);
+        var ring = el.querySelector('.sat-ring');
+        if (ring) el.removeChild(ring);
+        scene.appendChild(el);
       });
+
+      // Rimuove il center-ring
+      var cr = nodeCenter.querySelector('.center-ring');
+      if (cr) nodeCenter.removeChild(cr);
 
       if (grid.parentNode) grid.parentNode.removeChild(grid);
     }
