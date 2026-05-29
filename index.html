@@ -481,25 +481,49 @@
       max-width: 110px !important;
       max-height: 110px !important;
       flex-shrink: 0;
-      /* annulliamo bordo/sfondo: li gestisce .sat-ring */
       border: none !important;
-      background: none !important;
+      background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.01) 80%) !important;
       box-shadow: none !important;
-      backdrop-filter: none !important;
+      backdrop-filter: blur(6px) !important;
       overflow: visible !important;
+      transition: none !important;
     }
 
-    /* Anello rotante di ogni satellite */
+    /* Anello rotante — conic-gradient crea un arco luminoso visibile */
     .sat-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: transparent;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .sat-ring::before {
+      content: '';
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 3px solid rgba(86,27,109,0.75);
-      box-shadow:
-        0 0 0 1px rgba(138,45,181,0.25),
-        inset 0 0 18px rgba(86,27,109,0.18),
-        0 0 18px rgba(86,27,109,0.30);
-      pointer-events: none;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        transparent 60%,
+        rgba(138,45,181,0.5) 70%,
+        rgba(180,80,220,1) 85%,
+        rgba(220,140,255,1) 92%,
+        rgba(138,45,181,0.5) 97%,
+        transparent 100%
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 3px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 3px));
+    }
+
+    .sat-ring::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(86,27,109,0.40);
     }
 
     #sat1 .sat-ring { animation: mobileSpin  7s linear infinite; }
@@ -512,14 +536,56 @@
       z-index: 2;
       animation: none !important;
       transform: none !important;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.20));
     }
 
-    .sat-node:active .sat-ring {
-      border-color: rgba(138,45,181,0.95);
-      box-shadow:
-        0 0 0 2px rgba(138,45,181,0.60),
-        0 0 30px rgba(138,45,181,0.50),
-        inset 0 0 22px rgba(86,27,109,0.25);
+    /* ── Nodo centrale: doppio anello in senso opposto ── */
+    .center-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: transparent;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .center-ring::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        transparent 55%,
+        rgba(138,45,181,0.4) 68%,
+        rgba(180,80,220,1) 82%,
+        rgba(220,140,255,1) 90%,
+        rgba(138,45,181,0.4) 96%,
+        transparent 100%
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 3px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 3px));
+      animation: mobileSpin 14s linear infinite;
+    }
+
+    .center-ring::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        transparent 60%,
+        rgba(86,27,109,0.35) 72%,
+        rgba(138,45,181,0.85) 85%,
+        rgba(86,27,109,0.35) 95%,
+        transparent 100%
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #fff calc(100% - 2px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #fff calc(100% - 2px));
+      animation: mobileSpin 9s linear infinite reverse;
     }
 
     @keyframes mobileSpin {
